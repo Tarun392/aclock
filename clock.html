@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-image: url('https://wallpapercave.com/wp/wp4084302.jpg'); 
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        canvas {
+            background-color: rgba(255, 255, 255, 0.6); 
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="clock" width="300" height="300"></canvas>
+    <script>
+        const canvas = document.getElementById('clock');
+        const context = canvas.getContext('2d');
+        const radius = canvas.width / 2; 
+
+        function drawClock() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            
+            context.beginPath();
+            context.arc(radius, radius, radius * 0.9, 0, 2 * Math.PI);
+            context.fillStyle = 'white'; 
+            context.fill();
+
+            
+            context.font = '24px Arial';
+            context.fillStyle = 'black'; 
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            for (let i = 1; i <= 12; i++) {
+                const angle = (i - 3) * (Math.PI / 6);
+                const x = radius + radius * 0.8 * Math.cos(angle);
+                const y = radius + radius * 0.8 * Math.sin(angle);
+                context.fillText(i.toString(), x, y);
+            }
+
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            
+            const hourAngle = (hours - 3) * (Math.PI / 6) + (minutes / 60) * (Math.PI / 6);
+            drawHand(hourAngle, radius * 0.5, 8, 'black');
+
+            
+            const minuteAngle = (minutes - 15) * (Math.PI / 30) + (seconds / 60) * (Math.PI / 30);
+            drawHand(minuteAngle, radius * 0.7, 4, 'black');
+
+            
+            const secondAngle = (seconds - 15) * (Math.PI / 30);
+            drawHand(secondAngle, radius * 0.7, 2, 'red'); 
+
+            
+            context.beginPath();
+            context.arc(radius, radius, 5, 0, 2 * Math.PI);
+            context.fillStyle = 'black';
+            context.fill();
+
+            requestAnimationFrame(drawClock);
+        }
+
+        function drawHand(angle, length, width, color) {
+            context.beginPath();
+            context.strokeStyle = color;
+            context.lineWidth = width;
+            context.lineCap = 'round';
+            context.moveTo(radius, radius);
+            context.lineTo(radius + length * Math.cos(angle), radius + length * Math.sin(angle));
+            context.stroke();
+        }
+
+        drawClock();
+    </script>
+</body>
+</html>
+
